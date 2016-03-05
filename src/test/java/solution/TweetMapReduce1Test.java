@@ -64,6 +64,7 @@ public class TweetMapReduce1Test {
         mapDriver1.withOutput(new Text("dog"), new IntWritable(1));
         mapDriver1.withOutput(new Text("cat"), new IntWritable(1));
         mapDriver1.withOutput(new Text("cat"), new IntWritable(1));
+        mapDriver1.withOutput(new Text("#dog"), new IntWritable(1));
         mapDriver1.withOutput(new Text("dog"), new IntWritable(1));
         mapDriver1.withOutput(new Text("cat"), new IntWritable(1));
         mapDriver1.withOutput(new Text("cat"), new IntWritable(1));
@@ -98,6 +99,7 @@ public class TweetMapReduce1Test {
         mapReduceDriver1.withInput(new LongWritable(1), new Text("ScreenName\tRT @DarrenDalrymple: dog dog cat cat\ten\tThu Sep 26 08:50:21 CDT 2013\tnull"))
                 .withInput(new LongWritable(1), new Text("ScreenName\tRT @DarrenDalrymple: #dog dog cat cat\ten\tThu Sep 26 08:50:21 CDT 2013\tnull"))
                 .withInput(new LongWritable(1), new Text("Did you check for clean data?"));
+        mapReduceDriver1.withOutput(new Text("#dog"), new IntWritable(1));
         mapReduceDriver1.withOutput(new Text("cat"), new IntWritable(4));
         mapReduceDriver1.withOutput(new Text("dog"), new IntWritable(3));
         mapReduceDriver1.runTest();

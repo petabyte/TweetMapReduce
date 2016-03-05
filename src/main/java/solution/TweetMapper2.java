@@ -11,11 +11,19 @@ import java.io.IOException;
  */
 public class TweetMapper2 extends Mapper<Text, Text, IntWritable, Text> {
 
+    static enum Tweet {
+        BAD_RECORD
+    };
+
     IntWritable keyIntWritable = new IntWritable();
     @Override
     public void map(Text key, Text value, Context context)
             throws IOException, InterruptedException {
-        keyIntWritable.set(Integer.parseInt(value.toString()));
-        context.write(keyIntWritable, key);
+        try {
+            keyIntWritable.set(Integer.parseInt(value.toString()));
+            context.write(keyIntWritable, key);
+        }catch(NumberFormatException nfe){
+            context.getCounter(Tweet.BAD_RECORD).increment(1);
+        }
     }
 }

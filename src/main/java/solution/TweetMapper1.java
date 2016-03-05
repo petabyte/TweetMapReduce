@@ -16,11 +16,12 @@ public class TweetMapper1 extends Mapper<LongWritable, Text, Text, IntWritable> 
         NUM_TWEETS,
         BAD_RECORD,
         HASH_TAG,
+        GOOD_WORD,
         NOT_CONSIDERED_A_WORD
     };
 
-    Text wordText = new Text();
-    IntWritable countIntWritable = new IntWritable(1);
+    Text includedWordText = new Text();
+    IntWritable includedWordCountIntWritable = new IntWritable(1);
 
     @Override
     public void map(LongWritable key, Text value, Context context)
@@ -36,8 +37,11 @@ public class TweetMapper1 extends Mapper<LongWritable, Text, Text, IntWritable> 
             for (String word : tweetMessage.split("\\s+")) {
                 if (word.length() > 0) {
                     String wordLowerCase = word.toLowerCase();
-                    //Don't count hashtags
+                    //Let's include hashtags
                     if(wordLowerCase.matches("^#\\w+")){
+                        //Count How many HashTags
+                        includedWordText.set(wordLowerCase);
+                        context.write(includedWordText, includedWordCountIntWritable);
                         context.getCounter(Tweet.HASH_TAG).increment(1);
                     //Match words that are 3 letters and above
                     //Make sure it is not an @mention too as well
@@ -45,8 +49,9 @@ public class TweetMapper1 extends Mapper<LongWritable, Text, Text, IntWritable> 
                         //make sure that the word just contains word characters - no qoutes
                         //double quotation
                         String cleanWord = wordLowerCase.replaceAll("[^\\w+]","");
-                        wordText.set(cleanWord);
-                        context.write(wordText, countIntWritable);
+                        includedWordText.set(cleanWord);
+                        context.write(includedWordText, includedWordCountIntWritable);
+                        context.getCounter(Tweet.GOOD_WORD).increment(1);
                     }else{
                         //If it does not match a hashtag or a what we consider a word
                         //increment this
